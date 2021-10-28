@@ -9,9 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: hair 1
   m_Shader: {fileID: 4800000, guid: 873188af6a7b5ca49aa69929a5d863c1, type: 3}
-  m_ShaderKeywords: _ _DISABLE_SSR_TRANSPARENT _EMISSIVE_SIMPLE _IS_ANGELRING_OFF
-    _IS_OUTLINE_CLIPPING_NO _IS_TRANSCLIPPING_OFF _NORMALMAP_TANGENT_SPACE _OUTLINE_NML
-    _SHADINGGRADEMAP
+  m_ShaderKeywords: _DISABLE_SSR_TRANSPARENT _EMISSIVE_SIMPLE _IS_ANGELRING_OFF _IS_OUTLINE_CLIPPING_NO
+    _IS_TRANSCLIPPING_OFF _NORMALMAP_TANGENT_SPACE _OUTLINE_POS _SHADINGGRADEMAP
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -26,7 +25,6 @@ Material:
   - RayTracingPrepass
   - MOTIONVECTORS
   - JTRPFace
-  - SRPDEFAULTUNLIT
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -51,7 +49,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseColorMap:
-        m_Texture: {fileID: 2800000, guid: c4476b7569100b048995e8e131799c2b, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMap:
@@ -135,7 +133,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: e34d502aabca41a43b9adb5b385e86b0, type: 3}
+        m_Texture: {fileID: 2800000, guid: f7aeb959c944fea419d7f1b65161fc98, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskMap:
@@ -419,7 +417,7 @@ Material:
     - _Nearest_Distance: 0.5
     - _NormalMapSpace: 0
     - _NormalScale: 1
-    - _OUTLINE: 0
+    - _OUTLINE: 1
     - _Offset_X_Axis_BLD: -0.05
     - _Offset_Y_Axis_BLD: 0.09
     - _Offset_Z: 0
@@ -427,7 +425,7 @@ Material:
     - _OutlineOverridden: 0
     - _OutlineVisible: 1
     - _Outline_Ramp_Max_Distance: 10
-    - _Outline_Width: 1.74
+    - _Outline_Width: 1.3
     - _PPDLodThreshold: 5
     - _PPDMaxSamples: 15
     - _PPDMinSamples: 5
@@ -460,7 +458,7 @@ Material:
     - _Scroll_EmissiveV: 0
     - _SecondShadeOverridden: 0
     - _SecondShadeVisible: 1
-    - _Set_SystemShadowsToBase: 1
+    - _Set_SystemShadowsToBase: 0
     - _ShadeColor_Step: 0
     - _Smoothness: 0.5
     - _SmoothnessRemapMax: 1
@@ -496,9 +494,17 @@ Material:
     - _TangentHighLightLowWidth: 0.189
     - _TangentHighLightThreshold: 0.531
     - _TangentHighLightWidth: 0.059
+    - _TessellationBackFaceCullEpsilon: -0.25
+    - _TessellationFactor: 4
+    - _TessellationFactorMaxDistance: 50
+    - _TessellationFactorMinDistance: 20
+    - _TessellationFactorTriangleSize: 100
+    - _TessellationMode: 0
+    - _TessellationShapeFactor: 0.75
     - _TexWorldScale: 1
     - _TexWorldScaleEmissive: 1
     - _Thickness: 1
+    - _ThicknessMultiplier: 1
     - _TransmissionEnable: 1
     - _TransparentBackfaceEnable: 0
     - _TransparentCullMode: 2
@@ -534,13 +540,13 @@ Material:
     - _ZTestTransparent: 4
     - _ZWrite: 1
     - _ZWriteMode: 1
-    - _simpleUI: 2
+    - _simpleUI: 0
     - _utsTechnique: 1
     - _utsVersionX: 1
     - _utsVersionY: 0
     - _utsVersionZ: 0
     m_Colors:
-    - _1st_ShadeColor: {r: 0.872, g: 0.7240417, b: 0.637432, a: 1}
+    - _1st_ShadeColor: {r: 0.8773585, g: 0.7124886, b: 0.6166341, a: 1}
     - _2nd_ShadeColor: {r: 1, g: 1, b: 1, a: 1}
     - _AngelRingMaskColor: {r: 0, g: 1, b: 0, a: 0.95}
     - _AngelRing_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -567,7 +573,7 @@ Material:
     - _IridescenceThicknessRemap: {r: 0, g: 1, b: 0, a: 0}
     - _MatCapColor: {r: 1, g: 1, b: 1, a: 1}
     - _OutlineMaskColor: {r: 0, g: 0, b: 0, a: 0.5}
-    - _Outline_Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _Outline_Color: {r: 0, g: 0, b: 0, a: 1}
     - _RimLightColor: {r: 1, g: 1, b: 1, a: 1}
     - _RimLightMaskColor: {r: 1, g: 0, b: 1, a: 0.9}
     - _SSRimColor: {r: 1, g: 1, b: 1, a: 0}

@@ -21,6 +21,7 @@ float4 Eval(v2f i, float alpha)
 #if UNITY_COLORSPACE_GAMMA
 	float4 from = tex2D(_MainTex, i.uv);
 	float4 lineColor = tex2D(_LineTex, i.uv) * alpha;
+	
 	return float4(from.rgb * (1.0 - lineColor.a) + lineColor.rgb, 1.0 - (1.0 - from.a) * (1.0 - lineColor.a));
 #else
 	float4 from = tex2D(_MainTex, i.uv);
@@ -37,6 +38,7 @@ float4 Eval(v2f i, float alpha)
 	lineColor.rgb = LinearToGammaSpace(lineColor.rgb);
 	lineColor.a *= alpha;
 
+	// return float4(0,0,0,0);
 	return float4(GammaToLinearSpace(lerp(from.rgb, lineColor.rgb, lineColor.a)), 1.0 - (1.0 - from.a) * (1.0 - lineColor.a));
 #endif
 }

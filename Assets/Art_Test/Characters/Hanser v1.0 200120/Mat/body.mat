@@ -27,7 +27,6 @@ Material:
   - MOTIONVECTORS
   - JTRPFace
   - JTRPMask
-  - SRPDEFAULTUNLIT
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -136,7 +135,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 04c8fed22c66364458b5c16431bfe9f6, type: 3}
+        m_Texture: {fileID: 2800000, guid: 01bbe13ee8b42da4596cfafc4aa30dd5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskMap:
@@ -428,7 +427,7 @@ Material:
     - _OutlineOverridden: 0
     - _OutlineVisible: 1
     - _Outline_Ramp_Max_Distance: 10
-    - _Outline_Width: 1.74
+    - _Outline_Width: 1.89
     - _PPDLodThreshold: 5
     - _PPDMaxSamples: 15
     - _PPDMinSamples: 5
@@ -541,7 +540,7 @@ Material:
     - _utsVersionY: 0
     - _utsVersionZ: 0
     m_Colors:
-    - _1st_ShadeColor: {r: 0.862, g: 0.6975735, b: 0.674084, a: 1}
+    - _1st_ShadeColor: {r: 0.8962264, g: 0.7593616, b: 0.7398095, a: 1}
     - _2nd_ShadeColor: {r: 1, g: 1, b: 1, a: 1}
     - _AngelRingMaskColor: {r: 0, g: 1, b: 0, a: 0.95}
     - _AngelRing_Color: {r: 1, g: 1, b: 1, a: 1}

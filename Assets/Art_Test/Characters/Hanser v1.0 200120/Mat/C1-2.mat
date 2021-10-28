@@ -23,12 +23,15 @@ Material:
   m_Name: C1-2
   m_Shader: {fileID: 4800000, guid: 873188af6a7b5ca49aa69929a5d863c1, type: 3}
   m_ShaderKeywords: UTS_USE_RAYTRACING_SHADOW _ _DISABLE_SSR_TRANSPARENT _EMISSIVE_SIMPLE
-    _NORMALMAP_TANGENT_SPACE _OUTLINE_NML
+    _IS_ANGELRING_OFF _IS_CLIPPING_OFF _IS_OUTLINE_CLIPPING_NO _NORMALMAP_TANGENT_SPACE
+    _OUTLINE_NML
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
+  m_CustomRenderQueue: 2000
+  stringTagMap:
+    IgnoreProjection: False
+    RenderType: Opaque
   disabledShaderPasses:
   - TransparentDepthPrepass
   - TransparentDepthPostpass
@@ -146,7 +149,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 73a2f52f04bb046409810c42a8137649, type: 3}
+        m_Texture: {fileID: 2800000, guid: 053d3e8690b1e944dbc3b1753218c3c5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskMap:
@@ -483,7 +486,7 @@ Material:
     - _SphericalTangentIntensity: 0
     - _SphericalTangentProjectionIntensity: 0
     - _SrcBlend: 1
-    - _StencilComp: 8
+    - _StencilComp: 0
     - _StencilMode: 0
     - _StencilNo: 1
     - _StencilOpFail: 0

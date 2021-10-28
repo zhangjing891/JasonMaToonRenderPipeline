@@ -25,8 +25,8 @@ Material:
   - TransparentDepthPrepass
   - TransparentDepthPostpass
   - TransparentBackface
-  - SRPDEFAULTUNLIT
   - JTRPFace
+  - SRPDEFAULTUNLIT
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -630,7 +630,7 @@ Material:
     - _enable_selfshadow: 0
     - _roughness: 0.5
     - _shadow: 0
-    - _simpleUI: 2
+    - _simpleUI: 0
     - _utsTechnique: 1
     - _utsVersionX: 1
     - _utsVersionY: 0
