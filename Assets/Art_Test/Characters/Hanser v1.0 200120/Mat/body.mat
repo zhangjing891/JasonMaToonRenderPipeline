@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: body
   m_Shader: {fileID: 4800000, guid: 873188af6a7b5ca49aa69929a5d863c1, type: 3}
-  m_ShaderKeywords: UTS_USE_RAYTRACING_SHADOW _ _DISABLE_SSR_TRANSPARENT _EMISSIVE_SIMPLE
+  m_ShaderKeywords: UTS_USE_RAYTRACING_SHADOW _DISABLE_SSR_TRANSPARENT _EMISSIVE_SIMPLE
     _IS_ANGELRING_OFF _IS_CLIPPING_OFF _IS_OUTLINE_CLIPPING_NO _NORMALMAP_TANGENT_SPACE
     _OUTLINE_NML
   m_LightmapFlags: 4
@@ -437,12 +437,12 @@ Material:
     - _ReceivesSSR: 1
     - _ReceivesSSRTransparent: 0
     - _RefractionModel: 0
-    - _RimLight: 0
+    - _RimLight: 1
     - _RimLightOverridden: 0
     - _RimLightVisible: 1
     - _RimLight_FeatherOff: 0
     - _RimLight_InsideMask: 0.0001
-    - _RimLight_Power: 0.1
+    - _RimLight_Power: 0.274
     - _Rotate_EmissiveUV: 0
     - _Rotate_MatCapUV: 0
     - _Rotate_NormalMapForMatCapUV: 0
@@ -521,7 +521,7 @@ Material:
     - _UVBase: 0
     - _UVDetail: 0
     - _UVEmissive: 0
-    - _Unlit_Intensity: 1
+    - _Unlit_Intensity: 1.08
     - _UseEmissiveIntensity: 0
     - _UseShadowThreshold: 0
     - _Use_1stAs2nd: 0
@@ -534,7 +534,7 @@ Material:
     - _ZTestTransparent: 4
     - _ZWrite: 1
     - _ZWriteMode: 1
-    - _simpleUI: 0
+    - _simpleUI: 2
     - _utsTechnique: 0
     - _utsVersionX: 1
     - _utsVersionY: 0
