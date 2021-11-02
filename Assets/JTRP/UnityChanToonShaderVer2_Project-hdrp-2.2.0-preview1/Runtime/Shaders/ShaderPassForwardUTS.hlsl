@@ -1,75 +1,75 @@
 #if SHADERPASS != SHADERPASS_FORWARD
-#error SHADERPASS_is_not_correctly_define
+    #error SHADERPASS_is_not_correctly_define
 #endif
 
 #ifdef _WRITE_TRANSPARENT_MOTION_VECTOR
-#include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/ShaderPass/MotionVectorVertexShaderCommon.hlsl"
+    #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/ShaderPass/MotionVectorVertexShaderCommon.hlsl"
 
-PackedVaryingsType Vert(AttributesMesh inputMesh, AttributesPass inputPass)
-{
-    VaryingsType varyingsType;
-    varyingsType.vmesh = VertMesh(inputMesh);
+    PackedVaryingsType Vert(AttributesMesh inputMesh, AttributesPass inputPass)
+    {
+        VaryingsType varyingsType;
+        varyingsType.vmesh = VertMesh(inputMesh);
 
-    return MotionVectorVS(varyingsType, inputMesh, inputPass);
-}
+        return MotionVectorVS(varyingsType, inputMesh, inputPass);
+    }
 
-#ifdef TESSELLATION_ON
+    #ifdef TESSELLATION_ON
 
-PackedVaryingsToPS VertTesselation(VaryingsToDS input)
-{
-    VaryingsToPS output;
-    output.vmesh = VertMeshTesselation(input.vmesh);
-    MotionVectorPositionZBias(output);
+        PackedVaryingsToPS VertTesselation(VaryingsToDS input)
+        {
+            VaryingsToPS output;
+            output.vmesh = VertMeshTesselation(input.vmesh);
+            MotionVectorPositionZBias(output);
 
-    output.vpass.positionCS = input.vpass.positionCS;
-    output.vpass.previousPositionCS = input.vpass.previousPositionCS;
+            output.vpass.positionCS = input.vpass.positionCS;
+            output.vpass.previousPositionCS = input.vpass.previousPositionCS;
 
-    return PackVaryingsToPS(output);
-}
+            return PackVaryingsToPS(output);
+        }
 
-#endif // TESSELLATION_ON
+    #endif // TESSELLATION_ON
 
 #else // _WRITE_TRANSPARENT_MOTION_VECTOR
 
-#include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/ShaderPass/VertMesh.hlsl"
+    #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/ShaderPass/VertMesh.hlsl"
 
-PackedVaryingsType Vert(AttributesMesh inputMesh)
-{
-    VaryingsType varyingsType;
-    varyingsType.vmesh = VertMesh(inputMesh);
+    PackedVaryingsType Vert(AttributesMesh inputMesh)
+    {
+        VaryingsType varyingsType;
+        varyingsType.vmesh = VertMesh(inputMesh);
 
-#ifndef TESSELLATION_ON
-    AntiPerspective(varyingsType.vmesh.positionCS);
-#endif
+        #ifndef TESSELLATION_ON
+            AntiPerspective(varyingsType.vmesh.positionCS);
+        #endif
 
-    return PackVaryingsType(varyingsType);
-}
+        return PackVaryingsType(varyingsType);
+    }
 
-#ifdef TESSELLATION_ON
+    #ifdef TESSELLATION_ON
 
-PackedVaryingsToPS VertTesselation(VaryingsToDS input)
-{
-    VaryingsToPS output;
-    output.vmesh = VertMeshTesselation(input.vmesh);
+        PackedVaryingsToPS VertTesselation(VaryingsToDS input)
+        {
+            VaryingsToPS output;
+            output.vmesh = VertMeshTesselation(input.vmesh);
 
-    return PackVaryingsToPS(output);
-}
+            return PackVaryingsToPS(output);
+        }
 
 
-#endif // TESSELLATION_ON
+    #endif // TESSELLATION_ON
 
 #endif // _WRITE_TRANSPARENT_MOTION_VECTOR
 
 
 #ifdef TESSELLATION_ON
-#include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/ShaderPass/TessellationShare.hlsl"
+    #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/ShaderPass/TessellationShare.hlsl"
 #endif
 
 
 // unused
 float3 GetLightColor(LightLoopContext context, FragInputs input, PositionInputs posInput,
-    float3 V, BuiltinData builtinData,
-    BSDFData bsdfData, PreLightData preLightData, LightData light)
+float3 V, BuiltinData builtinData,
+BSDFData bsdfData, PreLightData preLightData, LightData light)
 {
     float3 finalColor = float3(0, 0, 0);
     float3 L; // lightToSample = positionWS - light.positionRWS;  unL = -lightToSample; L = unL * distRcp;
@@ -79,26 +79,26 @@ float3 GetLightColor(LightLoopContext context, FragInputs input, PositionInputs 
     {
         float4 lightColor = EvaluateLight_Punctual(context, posInput, light, L, distances);
         lightColor.rgb *= lightColor.a; // Composite
-# ifdef MATERIAL_INCLUDE_TRANSMISSION
+        # ifdef MATERIAL_INCLUDE_TRANSMISSION
         if (ShouldEvaluateThickObjectTransmission(V, L, preLightData, bsdfData, light.shadowIndex))
         {
             // Replace the 'baked' value using 'thickness from shadow'.
             bsdfData.transmittance = EvaluateTransmittance_Punctual(context, posInput,
-                bsdfData, light, L, distances);
+            bsdfData, light, L, distances);
         }
         else
-# endif
+        # endif
         {
             // This code works for both surface reflection and thin object transmission.
             float shadow = EvaluateShadow_Punctual(context, posInput, light, builtinData, GetNormalForShadowBias(bsdfData), L, distances);
             lightColor.rgb *= ComputeShadowColor(shadow, light.shadowTint, light.penumbraTint);
 
-# ifdef DEBUG_DISPLAY
+            # ifdef DEBUG_DISPLAY
             // The step with the attenuation is required to avoid seeing the screen tiles at the end of lights because the attenuation always falls to 0 before the tile ends.
             // Note: g_DebugShadowAttenuation have been setup in EvaluateShadow_Punctual
             if (_DebugShadowMapMode == SHADOWMAPDEBUGMODE_SINGLE_SHADOW && light.shadowIndex == _DebugSingleShadowIndex)
-                g_DebugShadowAttenuation *= step(FLT_EPS, lightColor.a);
-# endif
+            g_DebugShadowAttenuation *= step(FLT_EPS, lightColor.a);
+            # endif
         }
 
 
@@ -110,18 +110,18 @@ float3 GetLightColor(LightLoopContext context, FragInputs input, PositionInputs 
         {
             CBSDF cbsdf = EvaluateBSDF(V, L, preLightData, bsdfData);
 
-# if defined(MATERIAL_INCLUDE_TRANSMISSION) || defined(MATERIAL_INCLUDE_PRECOMPUTED_TRANSMISSION)
+            # if defined(MATERIAL_INCLUDE_TRANSMISSION) || defined(MATERIAL_INCLUDE_PRECOMPUTED_TRANSMISSION)
             float3 transmittance = bsdfData.transmittance;
-# else
+            # else
             float3 transmittance = float3(0.0, 0.0, 0.0);
-# endif
+            # endif
 
             // If transmittance or the CBSDF's transmission components are known to be 0,
             // the optimization pass of the compiler will remove all of the associated code.
             // However, this will take a lot more CPU time than doing the same thing using
             // the preprocessor.
-//                            lighting.diffuse = (cbsdf.diffR + cbsdf.diffT * transmittance) * lightColor * diffuseDimmer;
-//                            lighting.specular = (cbsdf.specR + cbsdf.specT * transmittance) * lightColor * specularDimmer;
+            //                            lighting.diffuse = (cbsdf.diffR + cbsdf.diffT * transmittance) * lightColor * diffuseDimmer;
+            //                            lighting.specular = (cbsdf.specR + cbsdf.specT * transmittance) * lightColor * specularDimmer;
             finalColor += (cbsdf.diffR + cbsdf.diffT  * transmittance) * lightColor  *light.diffuseDimmer;
             finalColor += (cbsdf.diffR + cbsdf.diffT  * transmittance) * lightColor  *light.specularDimmer;
         }
@@ -144,9 +144,9 @@ void Frag(PackedVaryingsToPS packedInput,
     OUTPUT_SSSBUFFER(outSSSBuffer)
 #else
     out float4 outColor : SV_Target0
-#ifdef _WRITE_TRANSPARENT_MOTION_VECTOR
-    , out float4 outMotionVec : SV_Target1
-#endif // _WRITE_TRANSPARENT_MOTION_VECTOR
+    #ifdef _WRITE_TRANSPARENT_MOTION_VECTOR
+        , out float4 outMotionVec : SV_Target1
+    #endif // _WRITE_TRANSPARENT_MOTION_VECTOR
 #endif // OUTPUT_SPLIT_LIGHTING
 #ifdef _DEPTHOFFSET_ON
     , out float outputDepth : SV_Depth
@@ -165,17 +165,17 @@ void Frag(PackedVaryingsToPS packedInput,
     PositionInputs posInput = GetPositionInput(input.positionSS.xy, _ScreenSize.zw, input.positionSS.z, input.positionSS.w, input.positionRWS.xyz, tileIndex);
 
 
-#ifdef VARYINGS_NEED_POSITION_WS
-    float3 V = GetWorldSpaceNormalizeViewDir(input.positionRWS);
-#else
-    // Unused
-    float3 V = float3(1.0, 1.0, 1.0); // Avoid the division by 0
-#endif
-#ifdef _SURFACE_TYPE_TRANSPARENT
-    uint featureFlags = LIGHT_FEATURE_MASK_FLAGS_TRANSPARENT;
-#else
-    uint featureFlags = LIGHT_FEATURE_MASK_FLAGS_OPAQUE;
-#endif
+    #ifdef VARYINGS_NEED_POSITION_WS
+        float3 V = GetWorldSpaceNormalizeViewDir(input.positionRWS);
+    #else
+        // Unused
+        float3 V = float3(1.0, 1.0, 1.0); // Avoid the division by 0
+    #endif
+    #ifdef _SURFACE_TYPE_TRANSPARENT
+        uint featureFlags = LIGHT_FEATURE_MASK_FLAGS_TRANSPARENT;
+    #else
+        uint featureFlags = LIGHT_FEATURE_MASK_FLAGS_OPAQUE;
+    #endif
     SurfaceData surfaceData;
     BuiltinData builtinData;
     GetSurfaceAndBuiltinData(input, V, posInput, surfaceData, builtinData);
@@ -189,8 +189,8 @@ void Frag(PackedVaryingsToPS packedInput,
 
 
     // toshi.
-#define UNITY_PROJ_COORD(a) a
-#define UNITY_SAMPLE_SCREEN_SHADOW(tex, uv) tex2Dproj( tex, UNITY_PROJ_COORD(uv) ).r
+    #define UNITY_PROJ_COORD(a) a
+    #define UNITY_SAMPLE_SCREEN_SHADOW(tex, uv) tex2Dproj( tex, UNITY_PROJ_COORD(uv) ).r
     float inverseClipping = 0;
     LightLoopContext context;
     context.shadowContext = InitShadowContext();
@@ -214,33 +214,33 @@ void Frag(PackedVaryingsToPS packedInput,
         if (_DirectionalShadowIndex >= 0)
         {
             DirectionalLightData light = _DirectionalLightDatas[_DirectionalShadowIndex];
-#if defined(SCREEN_SPACE_SHADOWS) && !defined(_SURFACE_TYPE_TRANSPARENT)
-            if ((light.screenSpaceShadowIndex & SCREEN_SPACE_SHADOW_INDEX_MASK) != INVALID_SCREEN_SPACE_SHADOW)
-            {
-                context.shadowValue = GetScreenSpaceColorShadow(posInput, light.screenSpaceShadowIndex);
-            }
-            else
-#endif
+            #if defined(SCREEN_SPACE_SHADOWS) && !defined(_SURFACE_TYPE_TRANSPARENT)
+                if ((light.screenSpaceShadowIndex & SCREEN_SPACE_SHADOW_INDEX_MASK) != INVALID_SCREEN_SPACE_SHADOW)
+                {
+                    context.shadowValue = GetScreenSpaceColorShadow(posInput, light.screenSpaceShadowIndex);
+                }
+                else
+            #endif
             {
                 float3 L = -light.forward;
 
-#if defined(UTS_USE_RAYTRACING_SHADOW)
-                // JTRP: HDRP Screen Space Ray Tracing Shadow, with hard self shadow (NoL < 0)
-                if ((light.screenSpaceShadowIndex & SCREEN_SPACE_SHADOW_INDEX_MASK) != INVALID_SCREEN_SPACE_SHADOW)
-                {
-                    context.shadowValue = lerp(1, (float)GetScreenSpaceColorShadow(posInput, light.screenSpaceShadowIndex), light.shadowDimmer);
-                }
-#else
-                // HDRP Shadow Map
-                if ((light.lightDimmer > 0) && (light.shadowDimmer > 0) && // Note: Volumetric can have different dimmer, thus why we test it here
+                #if defined(UTS_USE_RAYTRACING_SHADOW)
+                    // JTRP: HDRP Screen Space Ray Tracing Shadow, with hard self shadow (NoL < 0)
+                    if ((light.screenSpaceShadowIndex & SCREEN_SPACE_SHADOW_INDEX_MASK) != INVALID_SCREEN_SPACE_SHADOW)
+                    {
+                        context.shadowValue = lerp(1, (float)GetScreenSpaceColorShadow(posInput, light.screenSpaceShadowIndex), light.shadowDimmer);
+                    }
+                #else
+                    // HDRP Shadow Map
+                    if ((light.lightDimmer > 0) && (light.shadowDimmer > 0) && // Note: Volumetric can have different dimmer, thus why we test it here
                     IsNonZeroBSDF(V, L, preLightData, bsdfData) &&
                     !ShouldEvaluateThickObjectTransmission(V, L, preLightData, bsdfData, light.shadowIndex))
-                {
-					context.shadowValue = GetDirectionalShadowAttenuation(context.shadowContext,
+                    {
+                        context.shadowValue = GetDirectionalShadowAttenuation(context.shadowContext,
                         posInput.positionSS, posInput.positionWS + L * _FaceShadowBias, GetNormalForShadowBias(bsdfData),
                         light.shadowIndex, L);
-				}
-#endif
+                    }
+                #endif
             }
 
         }
@@ -248,11 +248,13 @@ void Frag(PackedVaryingsToPS packedInput,
         int mainLightIndex = GetUtsMainLightIndex(builtinData);
         if ( mainLightIndex >= 0)
         {
-#if defined(_SHADINGGRADEMAP)
-            finalColor = UTS_MainLightShadingGrademap(context, input, mainLightIndex, inverseClipping);
-#else
-            finalColor = UTS_MainLight(context, input, mainLightIndex, inverseClipping);
-#endif
+            #if defined(_SHADINGGRADEMAP)
+                finalColor = UTS_MainLightShadingGrademap(context, input, mainLightIndex, inverseClipping);
+                finalColor = float3(1,1,1);
+            #else
+                finalColor = UTS_MainLight(context, input, mainLightIndex, inverseClipping);
+                
+            #endif
         }
 
 
@@ -268,12 +270,12 @@ void Frag(PackedVaryingsToPS packedInput,
                     float3 lightColor = _DirectionalLightDatas[i].color * _LightIntensity;
                     float3 lightDirection = -_DirectionalLightDatas[i].forward;
                     float notDirectional = 0.0f;
-#if defined(_SHADINGGRADEMAP)
-                    float3 additionalLightColor = UTS_OtherLightsShadingGrademap(input, i_normalDir, lightColor, lightDirection, notDirectional);
+                    #if defined(_SHADINGGRADEMAP)
+                        float3 additionalLightColor = UTS_OtherLightsShadingGrademap(input, i_normalDir, lightColor, lightDirection, notDirectional);
 
-#else
-                    float3 additionalLightColor = UTS_OtherLights(input, i_normalDir, lightColor, lightDirection, notDirectional);
-#endif
+                    #else
+                        float3 additionalLightColor = UTS_OtherLights(input, i_normalDir, lightColor, lightDirection, notDirectional);
+                    #endif
                     finalColor += additionalLightColor;
                 }
             }
@@ -288,12 +290,12 @@ void Frag(PackedVaryingsToPS packedInput,
     // ------------------- env --------------------
     // Define macro for a better understanding of the loop
     // TODO: this code is now much harder to understand...
-#define EVALUATE_BSDF_ENV_SKY(envLightData, TYPE, type) \
-        IndirectLighting lighting = EvaluateBSDF_Env(context, V, posInput, preLightData, envLightData, bsdfData, envLightData.influenceShapeType, MERGE_NAME(GPUIMAGEBASEDLIGHTINGTYPE_, TYPE), MERGE_NAME(type, HierarchyWeight)); \
-        AccumulateIndirectLighting(lighting, aggregateLighting);
+    #define EVALUATE_BSDF_ENV_SKY(envLightData, TYPE, type) \
+    IndirectLighting lighting = EvaluateBSDF_Env(context, V, posInput, preLightData, envLightData, bsdfData, envLightData.influenceShapeType, MERGE_NAME(GPUIMAGEBASEDLIGHTINGTYPE_, TYPE), MERGE_NAME(type, HierarchyWeight)); \
+    AccumulateIndirectLighting(lighting, aggregateLighting);
 
-// Environment cubemap test lightlayers, sky don't test it
-#define EVALUATE_BSDF_ENV(envLightData, TYPE, type) if (IsMatchingLightLayer(envLightData.lightLayers, builtinData.renderingLayers)) { EVALUATE_BSDF_ENV_SKY(envLightData, TYPE, type) }
+    // Environment cubemap test lightlayers, sky don't test it
+    #define EVALUATE_BSDF_ENV(envLightData, TYPE, type) if (IsMatchingLightLayer(envLightData.lightLayers, builtinData.renderingLayers)) { EVALUATE_BSDF_ENV_SKY(envLightData, TYPE, type) }
 
     // First loop iteration
     if (featureFlags & (LIGHTFEATUREFLAGS_ENV | LIGHTFEATUREFLAGS_SKY | LIGHTFEATUREFLAGS_SSREFRACTION | LIGHTFEATUREFLAGS_SSREFLECTION))
@@ -304,18 +306,18 @@ void Frag(PackedVaryingsToPS packedInput,
         uint envLightStart, envLightCount;
 
         // Fetch first env light to provide the scene proxy for screen space computation
-#ifndef LIGHTLOOP_DISABLE_TILE_AND_CLUSTER
-        GetCountAndStart(posInput, LIGHTCATEGORY_ENV, envLightStart, envLightCount);
-#else   // LIGHTLOOP_DISABLE_TILE_AND_CLUSTER
-        envLightCount = _EnvLightCount;
-        envLightStart = 0;
-#endif
+        #ifndef LIGHTLOOP_DISABLE_TILE_AND_CLUSTER
+            GetCountAndStart(posInput, LIGHTCATEGORY_ENV, envLightStart, envLightCount);
+        #else   // LIGHTLOOP_DISABLE_TILE_AND_CLUSTER
+            envLightCount = _EnvLightCount;
+            envLightStart = 0;
+        #endif
 
         bool fastPath = false;
-#if SCALARIZE_LIGHT_LOOP
-        uint envStartFirstLane;
-        fastPath = IsFastPath(envLightStart, envStartFirstLane);
-#endif
+        #if SCALARIZE_LIGHT_LOOP
+            uint envStartFirstLane;
+            fastPath = IsFastPath(envLightStart, envStartFirstLane);
+        #endif
 
         // Reflection / Refraction hierarchy is
         //  1. Screen Space Refraction / Reflection
@@ -323,13 +325,13 @@ void Frag(PackedVaryingsToPS packedInput,
         //  3. Sky Reflection / Refraction
 
         // Apply SSR.
-#if !defined(_SURFACE_TYPE_TRANSPARENT) && !defined(_DISABLE_SSR)
-        {
-            IndirectLighting indirect = EvaluateBSDF_ScreenSpaceReflection(posInput, preLightData, bsdfData,
+        #if !defined(_SURFACE_TYPE_TRANSPARENT) && !defined(_DISABLE_SSR)
+            {
+                IndirectLighting indirect = EvaluateBSDF_ScreenSpaceReflection(posInput, preLightData, bsdfData,
                 reflectionHierarchyWeight);
-            AccumulateIndirectLighting(indirect, aggregateLighting);
-        }
-#endif
+                AccumulateIndirectLighting(indirect, aggregateLighting);
+            }
+        #endif
 
         EnvLightData envLightData;
         if (envLightCount > 0)
@@ -352,12 +354,12 @@ void Frag(PackedVaryingsToPS packedInput,
         {
             context.sampleReflection = SINGLE_PASS_CONTEXT_SAMPLE_REFLECTION_PROBES;
 
-#if SCALARIZE_LIGHT_LOOP
-            if (fastPath)
-            {
-                envLightStart = envStartFirstLane;
-            }
-#endif
+            #if SCALARIZE_LIGHT_LOOP
+                if (fastPath)
+                {
+                    envLightStart = envStartFirstLane;
+                }
+            #endif
 
             // Scalarized loop, same rationale of the punctual light version
             uint v_envLightListOffset = 0;
@@ -367,7 +369,7 @@ void Frag(PackedVaryingsToPS packedInput,
                 v_envLightIdx = FetchIndex(envLightStart, v_envLightListOffset);
                 uint s_envLightIdx = ScalarizeElementIndex(v_envLightIdx, fastPath);
                 if (s_envLightIdx == -1)
-                    break;
+                break;
 
                 EnvLightData s_envLightData = FetchEnvLight(s_envLightIdx);    // Scalar load.
 
@@ -416,30 +418,30 @@ void Frag(PackedVaryingsToPS packedInput,
             }
         }
     }
-#undef EVALUATE_BSDF_ENV
-#undef EVALUATE_BSDF_ENV_SKY
+    #undef EVALUATE_BSDF_ENV
+    #undef EVALUATE_BSDF_ENV_SKY
     // ------------------- env --------------------
     if (featureFlags & LIGHTFEATUREFLAGS_PUNCTUAL)
     {
         uint lightCount, lightStart;
 
-#ifndef LIGHTLOOP_DISABLE_TILE_AND_CLUSTER
-        GetCountAndStart(posInput, LIGHTCATEGORY_PUNCTUAL, lightStart, lightCount);
-#else   // LIGHTLOOP_DISABLE_TILE_AND_CLUSTER
-        lightCount = _PunctualLightCount;
-        lightStart = 0;
-#endif
+        #ifndef LIGHTLOOP_DISABLE_TILE_AND_CLUSTER
+            GetCountAndStart(posInput, LIGHTCATEGORY_PUNCTUAL, lightStart, lightCount);
+        #else   // LIGHTLOOP_DISABLE_TILE_AND_CLUSTER
+            lightCount = _PunctualLightCount;
+            lightStart = 0;
+        #endif
 
         bool fastPath = false;
-#if SCALARIZE_LIGHT_LOOP
-        uint lightStartLane0;
-        fastPath = IsFastPath(lightStart, lightStartLane0);
+        #if SCALARIZE_LIGHT_LOOP
+            uint lightStartLane0;
+            fastPath = IsFastPath(lightStart, lightStartLane0);
 
-        if (fastPath)
-        {
-            lightStart = lightStartLane0;
-        }
-#endif
+            if (fastPath)
+            {
+                lightStart = lightStartLane0;
+            }
+        #endif
 
         // Scalarized loop. All lights that are in a tile/cluster touched by any pixel in the wave are loaded (scalar load), only the one relevant to current thread/pixel are processed.
         // For clarity, the following code will follow the convention: variables starting with s_ are meant to be wave uniform (meant for scalar register),
@@ -456,7 +458,7 @@ void Frag(PackedVaryingsToPS packedInput,
             v_lightIdx = FetchIndex(lightStart, v_lightListOffset);
             uint s_lightIdx = ScalarizeElementIndex(v_lightIdx, fastPath);
             if (s_lightIdx == -1)
-                break;
+            break;
 
 
 
@@ -478,11 +480,11 @@ void Frag(PackedVaryingsToPS packedInput,
                 float3 additionalLightColor = s_lightData.color;
                 if (IsMatchingLightLayer(s_lightData.lightLayers, builtinData.renderingLayers))
                 {
-#if defined(_SHADINGGRADEMAP)
-                    float3 pointLightColor = UTS_OtherLightsShadingGrademap(input, i_normalDir, additionalLightColor, lightDirection, notDirectional);
-#else
-                    float3 pointLightColor = UTS_OtherLights(input, i_normalDir, additionalLightColor, lightDirection, notDirectional);
-#endif
+                    #if defined(_SHADINGGRADEMAP)
+                        float3 pointLightColor = UTS_OtherLightsShadingGrademap(input, i_normalDir, additionalLightColor, lightDirection, notDirectional);
+                    #else
+                        float3 pointLightColor = UTS_OtherLights(input, i_normalDir, additionalLightColor, lightDirection, notDirectional);
+                    #endif
                     finalColor += pointLightColor;
                 }
             }
@@ -503,39 +505,39 @@ void Frag(PackedVaryingsToPS packedInput,
 
 
 
-#if defined(_SHADINGGRADEMAP)
-    //v.2.0.4
-  #ifdef _IS_TRANSCLIPPING_OFF
+    #if defined(_SHADINGGRADEMAP)
+        //v.2.0.4
+        #ifdef _IS_TRANSCLIPPING_OFF
 
-    outColor = float4(finalColor, 1);
+            outColor = float4(finalColor, 1);
 
-  #elif _IS_TRANSCLIPPING_ON
-    float Set_Opacity = saturate((inverseClipping + _Tweak_transparency));
+        #elif _IS_TRANSCLIPPING_ON
+            float Set_Opacity = saturate((inverseClipping + _Tweak_transparency));
 
-    outColor = float4(finalColor, Set_Opacity);
+            outColor = float4(finalColor, Set_Opacity);
 
-  #endif
+        #endif
 
-#else //#if defined(_SHADINGGRADEMAP)
+    #else //#if defined(_SHADINGGRADEMAP)
 
-  #ifdef _IS_CLIPPING_OFF
-    //DoubleShadeWithFeather
+        #ifdef _IS_CLIPPING_OFF
+            //DoubleShadeWithFeather
 
-    outColor = float4(finalColor, 1);
+            outColor = float4(finalColor, 1);
 
-  #elif _IS_CLIPPING_MODE
-    //DoubleShadeWithFeather_Clipping
+        #elif _IS_CLIPPING_MODE
+            //DoubleShadeWithFeather_Clipping
 
-    outColor = float4(finalColor, 1);
+            outColor = float4(finalColor, 1);
 
-  #elif _IS_CLIPPING_TRANSMODE
-    //DoubleShadeWithFeather_TransClipping
-    float Set_Opacity = saturate((inverseClipping + _Tweak_transparency));
-    outColor = float4(finalColor, Set_Opacity);
-  #endif
+        #elif _IS_CLIPPING_TRANSMODE
+            //DoubleShadeWithFeather_TransClipping
+            float Set_Opacity = saturate((inverseClipping + _Tweak_transparency));
+            outColor = float4(finalColor, Set_Opacity);
+        #endif
 
-#endif //#if defined(_SHADINGGRADEMAP)
-#ifdef _DEPTHOFFSET_ON
-    outputDepth = posInput.deviceDepth;
-#endif
+    #endif //#if defined(_SHADINGGRADEMAP)
+    #ifdef _DEPTHOFFSET_ON
+        outputDepth = posInput.deviceDepth;
+    #endif
 }
